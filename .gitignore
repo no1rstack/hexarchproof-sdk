@@ -1,0 +1,12 @@
+node_modules/
+packages/*/out/
+packages/*/dist/
+packages/vscode-extension/*.vsix
+*.vsix
+.env
+.env.*
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+.venv/

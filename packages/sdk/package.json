@@ -1,0 +1,26 @@
+{
+  "name": "@hexarchproof/sdk",
+  "version": "0.0.1",
+  "description": "TypeScript SDK for Hexarch Deterministic Reproduction Proofs (DRP). Same input → same hash → same proof, anchored for independent verification.",
+  "keywords": ["hexarch","drp","deterministic","reproducibility","verifiable-compute","proof","auditability","noirstack","canonical-json","sha256"],
+  "license": "MIT",
+  "author": {"name": "Noir Stack LLC","url": "https://noirstack.com"},
+  "homepage": "https://hexarch.systems/",
+  "repository": {"type": "git","url": "https://github.com/no1rstack/hexarchproof-sdk"},
+  "bugs": {"url": "https://noirstack.com/support"},
+  "publishConfig": {"access": "public"},
+  "main": "./out/index.js",
+  "types": "./out/index.d.ts",
+  "exports": {".":{"require":"./out/index.js","types":"./out/index.d.ts"}},
+  "files": ["out/","LICENSE","README.md"],
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "node --test out/test/",
+    "prepublishOnly": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.5",
+    "typescript": "^5.6.3"
+  }
+}

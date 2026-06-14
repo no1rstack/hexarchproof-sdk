@@ -1,0 +1,41 @@
+name: Publish @hexarchproof/sdk to npm
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_bump:
+        description: "SemVer bump (major|minor|patch). Leave empty to publish current version."
+        required: false
+        default: ""
+  push:
+    tags:
+      - "sdk-v*.*.*"
+      - "v*.*.*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish-sdk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - name: Install workspace dependencies
+        run: npm install
+      - name: Compile SDK
+        working-directory: packages/sdk
+        run: npm run compile
+      - name: Bump version (optional)
+        if: ${{ inputs.version_bump != '' }}
+        working-directory: packages/sdk
+        run: npm version ${{ inputs.version_bump }} --no-git-tag-version
+      - name: Publish to npm with provenance
+        working-directory: packages/sdk
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public

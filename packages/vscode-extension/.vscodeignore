@@ -1,0 +1,8 @@
+**/*.ts
+**/tsconfig.json
+.vscode/**
+.git/**
+.gitignore
+!node_modules/@hexarchproof/sdk/out/**
+node_modules/**/test/**
+node_modules/**/.bin/**

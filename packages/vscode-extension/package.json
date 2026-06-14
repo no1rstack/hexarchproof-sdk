@@ -1,0 +1,41 @@
+{
+  "name": "hexarch-domain",
+  "displayName": "Hexarch Domain",
+  "description": "Execution becomes a verifiable artifact. Same input produces the same output, the same hash, and the same proof—anchored for independent verification.",
+  "version": "0.0.1",
+  "publisher": "noirstackllc",
+  "license": "MIT",
+  "engines": {"vscode": "^1.95.0"},
+  "categories": ["Other"],
+  "keywords": ["hexarch","deterministic","reproducibility","verifiable-compute","proof","auditability","noirstack"],
+  "icon": "assets/hexarch-icon.png",
+  "galleryBanner": {"color": "#0F172A","theme": "dark"},
+  "pricing": "Free",
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {"command": "hexarchDomain.showDeterminismMessage","title": "Hexarch: Show Verification Promise","category": "Hexarch"},
+      {"command": "hexarchDomain.hashInput","title": "Hexarch: Hash Input (SHA-256)","category": "Hexarch"},
+      {"command": "hexarchDomain.generateProof","title": "Hexarch: Generate Deterministic Proof","category": "Hexarch"},
+      {"command": "hexarchDomain.verifyProof","title": "Hexarch: Verify Deterministic Proof","category": "Hexarch"}
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package:vsix": "vsce package",
+    "publish:vsce": "vsce publish"
+  },
+  "repository": {"type": "git","url": "https://github.com/no1rstack/hexarchproof-sdk"},
+  "homepage": "https://hexarch.systems/",
+  "bugs": {"url": "https://noirstack.com/support"},
+  "qna": "https://noirstack.com/support",
+  "author": {"name": "Noir Stack LLC","url": "https://noirstack.com"},
+  "dependencies": {"@hexarchproof/sdk": "*"},
+  "devDependencies": {
+    "@types/node": "^20.16.5",
+    "@types/vscode": "^1.95.0",
+    "typescript": "^5.6.3"
+  }
+}
