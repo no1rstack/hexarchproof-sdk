@@ -1,18 +1,17 @@
 name: Publish Hexarch Domain VS Code Extension
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       version_bump:
         description: "SemVer bump (major|minor|patch) passed to vsce publish. Leave empty to publish current version."
         required: false
         default: ""
-  push:
-    tags:
-      - "extension-v*.*.*"
 
 permissions:
-  id-token: write  # required for Azure OIDC login
   contents: read
 
 jobs:
@@ -42,30 +41,29 @@ jobs:
       - name: Install vsce
         run: npm install -g @vscode/vsce
 
-      - name: Azure login (OIDC / Entra managed identity)
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Publish extension
+      - name: Publish extension (VSCE_PAT)
         working-directory: packages/vscode-extension
         shell: bash
         env:
-          REPO_ROOT: ${{ github.server_url }}/${{ github.repository }}
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
         run: |
           BASE_CONTENT="https://raw.githubusercontent.com/${{ github.repository }}/main/packages/vscode-extension"
           BASE_IMAGES="${BASE_CONTENT}"
-          BUMP="${{ inputs.version_bump }}"
+          BUMP="${{ github.event.inputs.version_bump || '' }}"
+
+          if [[ -z "${VSCE_PAT}" ]]; then
+            echo "VSCE_PAT secret is not configured."
+            exit 1
+          fi
+
           if [[ -n "${BUMP}" ]]; then
             vsce publish "${BUMP}" \
-              --azure-credential \
+              --pat "${VSCE_PAT}" \
               --base-content-url "${BASE_CONTENT}" \
               --base-images-url "${BASE_IMAGES}"
           else
             vsce publish \
-              --azure-credential \
+              --pat "${VSCE_PAT}" \
               --base-content-url "${BASE_CONTENT}" \
               --base-images-url "${BASE_IMAGES}"
           fi
