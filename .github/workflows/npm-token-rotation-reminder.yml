@@ -1,0 +1,39 @@
+name: NPM token rotation reminder
+
+on:
+  schedule:
+    # Daily at 14:00 UTC
+    - cron: '0 14 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send reminder when within 21 days of expiry
+        if: ${{ secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URLS != '' }}
+        shell: bash
+        env:
+          WEBHOOKS: ${{ secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URLS }}
+        run: |
+          EXPIRY="2026-09-12"
+          TODAY=$(date -u +%F)
+          DAYS_LEFT=$(( ( $(date -d "${EXPIRY}" +%s) - $(date -d "${TODAY}" +%s) ) / 86400 ))
+
+          if (( DAYS_LEFT < 0 )); then
+            MESSAGE="⚠️ NPM_TOKEN expiry date (${EXPIRY}) has passed. Rotate immediately in repo secrets."
+          elif (( DAYS_LEFT <= 21 )); then
+            MESSAGE="⏰ NPM_TOKEN expires on ${EXPIRY} (in ${DAYS_LEFT} day(s)). Rotate token in GitHub secrets soon."
+          else
+            echo "No reminder needed. ${DAYS_LEFT} days left."
+            exit 0
+          fi
+
+          while IFS= read -r url; do
+            [[ -z "${url}" ]] && continue
+            curl -sS -X POST -H "Content-Type: application/json" -d "{\"content\":\"${MESSAGE}\"}" "${url}" >/dev/null
+          done < <(echo "${WEBHOOKS}" | tr ',;' '\n')
