@@ -2,7 +2,7 @@
   "name": "hexarch-domain",
   "displayName": "Hexarch Domain",
   "description": "Execution becomes a verifiable artifact. Same input produces the same output, the same hash, and the same proof—anchored for independent verification.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "noirstackllc",
   "license": "MIT",
   "engines": {"vscode": "^1.95.0"},
