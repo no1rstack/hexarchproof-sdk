@@ -14,17 +14,36 @@ permissions:
 jobs:
   publish-pypi:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
       - name: Install build tools
         run: pip install build
+
       - name: Build sdist and wheel
         working-directory: packages/python-sdk
         run: python -m build
+
       - name: Publish to PyPI (OIDC trusted publisher)
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: packages/python-sdk/dist/
+
+      - name: Announce PyPI publish to Discord
+        if: ${{ success() && secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URLS != '' }}
+        shell: bash
+        env:
+          WEBHOOKS: ${{ secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URLS }}
+        run: |
+          MESSAGE="✅ Published hexarchproof-sdk to PyPI from ${GITHUB_REPOSITORY}@${GITHUB_SHA}."
+          while IFS= read -r url; do
+            [[ -z "${url}" ]] && continue
+            curl -sS -X POST -H "Content-Type: application/json" -d "{\"content\":\"${MESSAGE}\"}" "${url}" >/dev/null
+          done < <(echo "${WEBHOOKS}" | tr ',;' '\n')
