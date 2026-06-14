@@ -1,19 +1,20 @@
-name: Publish @hexarchproof/sdk to npm
+name: Publish @noirstack/hexarchproof-sdk to npm
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       version_bump:
         description: "SemVer bump (major|minor|patch). Leave empty to publish current version."
         required: false
         default: ""
+  push:
+    tags:
+      - "sdk-v*.*.*"
+      - "v*.*.*"
 
 permissions:
   contents: read
-  id-token: write # required for npm provenance
+  id-token: write  # required for OIDC provenance
 
 jobs:
   publish-sdk:
@@ -37,15 +38,9 @@ jobs:
         working-directory: packages/sdk
 
       - name: Bump version (optional)
+        if: ${{ inputs.version_bump != '' }}
         working-directory: packages/sdk
-        shell: bash
-        run: |
-          BUMP="${{ github.event.inputs.version_bump || '' }}"
-          if [[ -n "${BUMP}" ]]; then
-            npm version "${BUMP}" --no-git-tag-version
-          else
-            echo "No version bump requested; using package.json version."
-          fi
+        run: npm version ${{ inputs.version_bump }} --no-git-tag-version
 
       - name: Publish to npm with provenance
         working-directory: packages/sdk
@@ -54,17 +49,12 @@ jobs:
         run: npm publish --provenance --access public
 
       - name: Announce npm publish to Discord
-        if: ${{ success() }}
+        if: ${{ success() && secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URLS != '' }}
         shell: bash
         env:
           WEBHOOKS: ${{ secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URLS }}
         run: |
-          if [[ -z "${WEBHOOKS}" ]]; then
-            echo "No DISCORD_ANNOUNCEMENT_WEBHOOK_URLS configured; skipping announcement."
-            exit 0
-          fi
-
-          MESSAGE="✅ Published @hexarchproof/sdk to npm from ${GITHUB_REPOSITORY}@${GITHUB_SHA}."
+          MESSAGE="✅ Published @noirstack/hexarchproof-sdk to npm from ${GITHUB_REPOSITORY}@${GITHUB_SHA}."
           while IFS= read -r url; do
             [[ -z "${url}" ]] && continue
             curl -sS -X POST -H "Content-Type: application/json" -d "{\"content\":\"${MESSAGE}\"}" "${url}" >/dev/null
