@@ -1,15 +1,15 @@
 name: Publish Hexarch Domain VS Code Extension
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       version_bump:
         description: "SemVer bump (major|minor|patch) passed to vsce publish. Leave empty to publish current version."
         required: false
         default: ""
+  push:
+    tags:
+      - "extension-v*.*.*"
 
 permissions:
   contents: read
@@ -38,24 +38,19 @@ jobs:
         run: npm run compile
         working-directory: packages/vscode-extension
 
-      - name: Install vsce
-        run: npm install -g @vscode/vsce
-
-      - name: Publish extension (VSCE_PAT)
+      - name: Publish extension
         working-directory: packages/vscode-extension
         shell: bash
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
         run: |
-          BASE_CONTENT="https://raw.githubusercontent.com/${{ github.repository }}/main/packages/vscode-extension"
-          BASE_IMAGES="${BASE_CONTENT}"
-          BUMP="${{ github.event.inputs.version_bump || '' }}"
-
           if [[ -z "${VSCE_PAT}" ]]; then
-            echo "VSCE_PAT secret is not configured."
+            echo "VSCE_PAT is not set. Please add VSCE_PAT secret." >&2
             exit 1
           fi
-
+          BASE_CONTENT="https://raw.githubusercontent.com/${{ github.repository }}/main/packages/vscode-extension"
+          BASE_IMAGES="${BASE_CONTENT}"
+          BUMP="${{ inputs.version_bump }}"
           if [[ -n "${BUMP}" ]]; then
             vsce publish "${BUMP}" \
               --pat "${VSCE_PAT}" \
@@ -69,16 +64,11 @@ jobs:
           fi
 
       - name: Announce VS Code extension publish to Discord
-        if: ${{ success() }}
+        if: ${{ success() && secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URLS != '' }}
         shell: bash
         env:
           WEBHOOKS: ${{ secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URLS }}
         run: |
-          if [[ -z "${WEBHOOKS}" ]]; then
-            echo "No DISCORD_ANNOUNCEMENT_WEBHOOK_URLS configured; skipping announcement."
-            exit 0
-          fi
-
           MESSAGE="✅ Published hexarch-domain VS Code extension from ${GITHUB_REPOSITORY}@${GITHUB_SHA}."
           while IFS= read -r url; do
             [[ -z "${url}" ]] && continue
