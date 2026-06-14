@@ -69,11 +69,16 @@ jobs:
           fi
 
       - name: Announce VS Code extension publish to Discord
-        if: ${{ success() && secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URLS != '' }}
+        if: ${{ success() }}
         shell: bash
         env:
           WEBHOOKS: ${{ secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URLS }}
         run: |
+          if [[ -z "${WEBHOOKS}" ]]; then
+            echo "No DISCORD_ANNOUNCEMENT_WEBHOOK_URLS configured; skipping announcement."
+            exit 0
+          fi
+
           MESSAGE="✅ Published hexarch-domain VS Code extension from ${GITHUB_REPOSITORY}@${GITHUB_SHA}."
           while IFS= read -r url; do
             [[ -z "${url}" ]] && continue
