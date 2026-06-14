@@ -22,10 +22,10 @@ Execution becomes a verifiable artifact. Same input produces the same output, th
 
 ## Package listings
 
-- npm: https://www.npmjs.com/package/@hexarchproof/sdk
+- npm: https://www.npmjs.com/package/@noirstack/hexarchproof-sdk
 - PyPI: https://pypi.org/project/hexarchproof-sdk/
 - VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=Hexarch.hexarch-domain
-- VS Code Publisher: https://marketplace.visualstudio.com/publishers/Hexarch
+- Publisher Hexarch: https://marketplace.visualstudio.com/publishers/Hexarch
 - Website: https://hexarch.systems/
 - Discord Community: https://discord.gg/DZysBQJQ
 
@@ -33,7 +33,7 @@ Execution becomes a verifiable artifact. Same input produces the same output, th
 
 | Package | Language | Description |
 |---|---|---|
-| [`@hexarchproof/sdk`](./packages/sdk) | TypeScript | Deterministic proof build + verify for Node.js and bundlers |
+| [`@noirstack/hexarchproof-sdk`](./packages/sdk) | TypeScript | Deterministic proof build + verify for Node.js and bundlers |
 | [`hexarchproof-sdk`](./packages/python-sdk) | Python | Same algorithms — canonical JSON, SHA-256, DRP v1 |
 | [`hexarch-domain`](./packages/vscode-extension) | VS Code Extension | Proof commands in the editor, powered by the TS SDK |
 
@@ -57,7 +57,7 @@ From repository root:
 ### TypeScript
 
 ```ts
-import { buildProof, verifyProof, sha256HexString, sha256HexJson } from '@hexarchproof/sdk';
+import { buildProof, verifyProof, sha256HexString, sha256HexJson } from '@noirstack/hexarchproof-sdk';
 
 // Hash any text deterministically
 const hash = sha256HexString('my payload');
@@ -131,19 +131,16 @@ print(result.valid)   # True
 
 ## CI Publishing
 
-Three workflows are included:
+Two workflows are included:
 
-- `.github/workflows/publish-sdk.yml` — publishes `@hexarchproof/sdk` to npm
-- `.github/workflows/publish-pypi.yml` — publishes `hexarchproof-sdk` to PyPI
-- `.github/workflows/publish-extension.yml` — publishes the VS Code extension to the Marketplace
+- `.github/workflows/publish-sdk.yml` — publishes `@noirstack/hexarchproof-sdk` to npm with OIDC provenance
+- `.github/workflows/publish-extension.yml` — publishes the VS Code extension to the Marketplace with Entra ID managed identity
 
 ### Required secrets
 
 For npm: `NPM_TOKEN`
 
-For PyPI: `PYPI_API_TOKEN` (token fallback), optionally trusted publisher
-
-For VS Code Marketplace: `VSCE_PAT`
+For VS Code Marketplace: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`
 
 ## License
 
