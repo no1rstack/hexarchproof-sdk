@@ -134,13 +134,13 @@ print(result.valid)   # True
 Two workflows are included:
 
 - `.github/workflows/publish-sdk.yml` — publishes `@noirstack/hexarchproof-sdk` to npm with OIDC provenance
-- `.github/workflows/publish-extension.yml` — publishes the VS Code extension to the Marketplace with Entra ID managed identity
+- `.github/workflows/publish-extension.yml` — publishes the VS Code extension to the Marketplace using `VSCE_PAT`
 
 ### Required secrets
 
 For npm: `NPM_TOKEN`
 
-For VS Code Marketplace: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`
+For VS Code Marketplace: `VSCE_PAT`
 
 ## License
 
