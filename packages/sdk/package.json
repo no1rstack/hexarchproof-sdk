@@ -1,6 +1,6 @@
 {
   "name": "@hexarchproof/sdk",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "TypeScript SDK for Hexarch Deterministic Reproduction Proofs (DRP). Same input → same hash → same proof, anchored for independent verification.",
   "keywords": ["hexarch","drp","deterministic","reproducibility","verifiable-compute","proof","auditability","noirstack","canonical-json","sha256"],
   "license": "MIT",
