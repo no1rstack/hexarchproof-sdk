@@ -11,7 +11,7 @@
    ██║  ██║██╔══██╗   ╚██╗ ██╔╝    ╚════██║██║  ██║██╔═██╗
    ██████╔╝██║  ██║    ╚████╔╝     ███████║██████╔╝██║  ██╗
    ╚═════╝ ╚═╝  ╚═╝     ╚═══╝      ╚══════╝╚═════╝ ╚═╝  ╚═╝
-   Hexarch Proof SDK | TypeScript + Python | MIT | © Noir Stack LLC 2026
+   Hexarch Proof SDK | TypeScript + Python | BLI | © Noir Stack LLC 2026
 ```
 
 # hexarchproof-sdk
@@ -24,7 +24,8 @@ Execution becomes a verifiable artifact. Same input produces the same output, th
 
 - npm: https://www.npmjs.com/package/@hexarchproof/sdk
 - PyPI: https://pypi.org/project/hexarchproof-sdk/
-- VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=noirstackllc.hexarch-domain
+- VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=Hexarch.hexarch-domain
+- VS Code Publisher: https://marketplace.visualstudio.com/publishers/Hexarch
 - Website: https://hexarch.systems/
 - Discord Community: https://discord.gg/DZysBQJQ
 
@@ -132,21 +133,21 @@ print(result.valid)   # True
 
 Three workflows are included:
 
-- `.github/workflows/publish-sdk.yml` — publishes `@hexarchproof/sdk` to npm with OIDC provenance
-- `.github/workflows/publish-pypi.yml` — publishes `hexarchproof-sdk` to PyPI with OIDC trusted publisher
-- `.github/workflows/publish-extension.yml` — publishes the VS Code extension to the Marketplace with Entra ID managed identity
+- `.github/workflows/publish-sdk.yml` — publishes `@hexarchproof/sdk` to npm
+- `.github/workflows/publish-pypi.yml` — publishes `hexarchproof-sdk` to PyPI
+- `.github/workflows/publish-extension.yml` — publishes the VS Code extension to the Marketplace
 
 ### Required secrets
 
 For npm: `NPM_TOKEN`
 
-For PyPI: configure a [trusted publisher](https://docs.pypi.org/trusted-publishers/) — no secrets needed
+For PyPI: `PYPI_API_TOKEN` (token fallback), optionally trusted publisher
 
-For VS Code Marketplace: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`
+For VS Code Marketplace: `VSCE_PAT`
 
 ## License
 
-This project is licensed under the **MIT License**.
+This project is licensed under the **Business License Integration (BLI)**.
 
 See [LICENSE](./LICENSE) for details.
 
