@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version_bump:
-        description: "SemVer bump (major|minor|patch). Leave empty to publish current version."
+        description: "SemVer bump (major|minor|patch) passed to vsce publish. Leave empty to publish current version."
         required: false
         default: ""
   push:
@@ -12,41 +12,72 @@ on:
       - "extension-v*.*.*"
 
 permissions:
-  id-token: write
+  id-token: write  # required for Azure OIDC login
   contents: read
 
 jobs:
   publish-extension:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - name: Install workspace dependencies
         run: npm install
+
       - name: Compile SDK
+        run: npm run compile
         working-directory: packages/sdk
-        run: npm run compile
+
       - name: Compile extension
-        working-directory: packages/vscode-extension
         run: npm run compile
+        working-directory: packages/vscode-extension
+
       - name: Install vsce
         run: npm install -g @vscode/vsce
+
       - name: Azure login (OIDC / Entra managed identity)
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
       - name: Publish extension
         working-directory: packages/vscode-extension
         shell: bash
+        env:
+          REPO_ROOT: ${{ github.server_url }}/${{ github.repository }}
         run: |
-          BASE="https://raw.githubusercontent.com/${{ github.repository }}/main/packages/vscode-extension"
+          BASE_CONTENT="https://raw.githubusercontent.com/${{ github.repository }}/main/packages/vscode-extension"
+          BASE_IMAGES="${BASE_CONTENT}"
           BUMP="${{ inputs.version_bump }}"
           if [[ -n "${BUMP}" ]]; then
-            vsce publish "${BUMP}" --azure-credential --base-content-url "${BASE}" --base-images-url "${BASE}"
+            vsce publish "${BUMP}" \
+              --azure-credential \
+              --base-content-url "${BASE_CONTENT}" \
+              --base-images-url "${BASE_IMAGES}"
           else
-            vsce publish --azure-credential --base-content-url "${BASE}" --base-images-url "${BASE}"
+            vsce publish \
+              --azure-credential \
+              --base-content-url "${BASE_CONTENT}" \
+              --base-images-url "${BASE_IMAGES}"
           fi
+
+      - name: Announce VS Code extension publish to Discord
+        if: ${{ success() && secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URLS != '' }}
+        shell: bash
+        env:
+          WEBHOOKS: ${{ secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URLS }}
+        run: |
+          MESSAGE="✅ Published hexarch-domain VS Code extension from ${GITHUB_REPOSITORY}@${GITHUB_SHA}."
+          while IFS= read -r url; do
+            [[ -z "${url}" ]] && continue
+            curl -sS -X POST -H "Content-Type: application/json" -d "{\"content\":\"${MESSAGE}\"}" "${url}" >/dev/null
+          done < <(echo "${WEBHOOKS}" | tr ',;' '\n')
