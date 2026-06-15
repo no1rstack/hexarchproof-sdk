@@ -14,6 +14,8 @@ permissions:
 jobs:
   publish-pypi:
     runs-on: ubuntu-latest
+    env:
+      HAS_TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD != '' }}
 
     steps:
       - name: Checkout
@@ -32,13 +34,13 @@ jobs:
         run: python -m build
 
       - name: Publish to PyPI (OIDC trusted publisher)
-        if: ${{ secrets.TWINE_PASSWORD == '' }}
+        if: ${{ env.HAS_TWINE_PASSWORD != 'true' }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: packages/python-sdk/dist/
 
       - name: Publish to PyPI (Twine credentials)
-        if: ${{ secrets.TWINE_PASSWORD != '' }}
+        if: ${{ env.HAS_TWINE_PASSWORD == 'true' }}
         env:
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
@@ -49,11 +51,14 @@ jobs:
           python -m twine upload --repository-url "${TWINE_REPOSITORY_URL}" packages/python-sdk/dist/*
 
       - name: Announce PyPI publish to Discord
-        if: ${{ success() && secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URLS != '' }}
         shell: bash
         env:
           WEBHOOKS: ${{ secrets.DISCORD_ANNOUNCEMENT_WEBHOOK_URLS }}
         run: |
+          if [[ -z "${WEBHOOKS}" ]]; then
+            echo "DISCORD_ANNOUNCEMENT_WEBHOOK_URLS not configured; skipping Discord announcement."
+            exit 0
+          fi
           MESSAGE="✅ Published hexarchproof-sdk to PyPI from ${GITHUB_REPOSITORY}@${GITHUB_SHA}."
           while IFS= read -r url; do
             [[ -z "${url}" ]] && continue

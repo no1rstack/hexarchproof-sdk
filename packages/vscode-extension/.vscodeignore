@@ -8,3 +8,6 @@ test/**
 tsconfig.json
 package-lock.json
 **/*.map
+node_modules/**
+../**
+../../**
