@@ -73,11 +73,11 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "lint": "tsc --noEmit -p ./",
-    "package": "node ./node_modules/@vscode/vsce/vsce package --no-dependencies",
-    "publish": "node ./node_modules/@vscode/vsce/vsce publish"
+    "package": "node ../../node_modules/@vscode/vsce/vsce package --no-dependencies",
+    "publish": "node ../../node_modules/@vscode/vsce/vsce publish"
   },
   "dependencies": {
-    "@hexarchproof/sdk": "*"
+    "@noirstack/hexarchproof-sdk": "*"
   },
   "devDependencies": {
     "@types/node": "^20.16.5",
