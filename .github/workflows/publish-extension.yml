@@ -52,12 +52,12 @@ jobs:
           BASE_IMAGES="${BASE_CONTENT}"
           BUMP="${{ inputs.version_bump }}"
           if [[ -n "${BUMP}" ]]; then
-            vsce publish "${BUMP}" \
+            npm exec --yes @vscode/vsce -- publish "${BUMP}" \
               --pat "${VSCE_PAT}" \
               --base-content-url "${BASE_CONTENT}" \
               --base-images-url "${BASE_IMAGES}"
           else
-            vsce publish \
+            npm exec --yes @vscode/vsce -- publish \
               --pat "${VSCE_PAT}" \
               --base-content-url "${BASE_CONTENT}" \
               --base-images-url "${BASE_IMAGES}"
