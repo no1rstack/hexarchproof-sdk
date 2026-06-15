@@ -11,7 +11,7 @@ Same input produces the same output, the same hash, and the same proof — ancho
 - **Hexarch: Generate Deterministic Proof** — builds a full DRP v1 JSON proof from your text
 - **Hexarch: Verify Deterministic Proof** — validates a proof JSON document against its original input
 
-All commands use [`@noirstack/hexarchproof-sdk`](https://www.npmjs.com/package/@noirstack/hexarchproof-sdk).
+All commands use [`@hexarchproof/sdk`](https://www.npmjs.com/package/@hexarchproof/sdk).
 
 ## Commands
 
@@ -26,6 +26,18 @@ All commands use [`@noirstack/hexarchproof-sdk`](https://www.npmjs.com/package/@
 
 - Hexarch Domain: https://hexarch.systems/
 - Company: https://noirstack.com
-- Support: https://noirstack.com/support
-- GitHub: https://github.com/NoirStackLLC
+- Support: https://github.com/no1rstack/hexarchproof-sdk/issues
+- GitHub: https://github.com/no1rstack/hexarchproof-sdk
 - LinkedIn: https://www.linkedin.com/company/113360045/
+
+## Publishing
+
+From repository root:
+
+1. Install dependencies: `npm install`
+2. Compile extension: `npm run build:extension`
+3. Package VSIX: `npm run package -w packages/vscode-extension`
+
+To publish with the configured Marketplace publisher:
+
+- `npm run publish -w packages/vscode-extension`

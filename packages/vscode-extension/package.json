@@ -5,6 +5,23 @@
   "version": "0.0.1",
   "publisher": "Hexarch",
   "license": "BLI",
+  "author": {
+    "name": "Noir Stack LLC",
+    "url": "https://noirstack.com"
+  },
+  "homepage": "https://hexarch.systems/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/no1rstack/hexarchproof-sdk.git",
+    "directory": "packages/vscode-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/no1rstack/hexarchproof-sdk/issues"
+  },
+  "qna": "marketplace",
+  "sponsor": {
+    "url": "https://noirstack.com"
+  },
   "engines": {
     "vscode": "^1.95.0"
   },
@@ -56,24 +73,11 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "lint": "tsc --noEmit -p ./",
-    "package:vsix": "vsce package --no-dependencies",
-    "publish:vsce": "vsce publish"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/NoirStackLLC/hexarchproof-sdk"
-  },
-  "homepage": "https://hexarch.systems/",
-  "bugs": {
-    "url": "https://noirstack.com/support"
-  },
-  "qna": "https://noirstack.com/support",
-  "author": {
-    "name": "Noir Stack LLC",
-    "url": "https://noirstack.com"
+    "package": "node ./node_modules/@vscode/vsce/vsce package --no-dependencies",
+    "publish": "node ./node_modules/@vscode/vsce/vsce publish"
   },
   "dependencies": {
-    "@noirstack/hexarchproof-sdk": "*"
+    "@hexarchproof/sdk": "*"
   },
   "devDependencies": {
     "@types/node": "^20.16.5",
