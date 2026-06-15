@@ -37,7 +37,6 @@
     "auditability",
     "noirstack"
   ],
-  "icon": "assets/hexarch-icon.png",
   "galleryBanner": {
     "color": "#0F172A",
     "theme": "dark"
