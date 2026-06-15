@@ -48,19 +48,13 @@ jobs:
             echo "VSCE_PAT is not set. Please add VSCE_PAT secret." >&2
             exit 1
           fi
-          BASE_CONTENT="https://raw.githubusercontent.com/${{ github.repository }}/main/packages/vscode-extension"
-          BASE_IMAGES="${BASE_CONTENT}"
           BUMP="${{ inputs.version_bump }}"
           if [[ -n "${BUMP}" ]]; then
             npm exec --yes @vscode/vsce -- publish "${BUMP}" \
-              --pat "${VSCE_PAT}" \
-              --base-content-url "${BASE_CONTENT}" \
-              --base-images-url "${BASE_IMAGES}"
+              --pat "${VSCE_PAT}"
           else
             npm exec --yes @vscode/vsce -- publish \
-              --pat "${VSCE_PAT}" \
-              --base-content-url "${BASE_CONTENT}" \
-              --base-images-url "${BASE_IMAGES}"
+              --pat "${VSCE_PAT}"
           fi
 
       - name: Announce VS Code extension publish to Discord
