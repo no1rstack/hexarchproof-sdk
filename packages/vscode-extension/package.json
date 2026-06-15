@@ -70,10 +70,10 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
+    "compile": "npm run compile -w @noirstack/hexarchproof-sdk && tsc -p ./",
     "watch": "tsc -watch -p ./",
     "lint": "tsc --noEmit -p ./",
-    "package": "node ../../node_modules/@vscode/vsce/vsce package --no-dependencies",
+    "package": "node ../../node_modules/@vscode/vsce/vsce package",
     "publish": "node ../../node_modules/@vscode/vsce/vsce publish"
   },
   "dependencies": {
