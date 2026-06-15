@@ -69,14 +69,11 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "npm run compile -w @noirstack/hexarchproof-sdk && tsc -p ./",
+    "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "lint": "tsc --noEmit -p ./",
-    "package": "node ../../node_modules/@vscode/vsce/vsce package",
+    "package": "node ../../node_modules/@vscode/vsce/vsce package --no-dependencies",
     "publish": "node ../../node_modules/@vscode/vsce/vsce publish"
-  },
-  "dependencies": {
-    "@noirstack/hexarchproof-sdk": "*"
   },
   "devDependencies": {
     "@types/node": "^20.16.5",
