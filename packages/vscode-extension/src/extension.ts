@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { buildProof, sha256HexString, verifyProof, type JsonLike } from '@hexarchproof/sdk';
+import { buildProof, sha256HexString, verifyProof, type JsonLike } from '@noirstack/hexarchproof-sdk';
 
 const TEXT_SPEC: JsonLike = { type: 'hexarch.text-proof', version: '1', encoding: 'utf8' };
 
