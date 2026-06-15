@@ -28,6 +28,7 @@
   "categories": [
     "Other"
   ],
+  "icon": "assets/icon-512.png",
   "keywords": [
     "hexarch",
     "deterministic",
